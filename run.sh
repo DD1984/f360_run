@@ -57,12 +57,21 @@ dns="8.8.8.8"
 
 network_settings="--dns=$dns"
 
+#if mac will be changed - fusion360 ask to login  account
+#for this reason we generate random mac and then save it to file
+mac=$(tr -dc A-F0-9 < /dev/urandom | head -c 10 | sed -r 's/(..)/\1:/g;s/:$//;s/^/02:/')
+if test -f run.mac
+then
+	mac=$(cat run.mac)
+else
+	echo $mac > run.mac
+fi
+network_settings="--mac=$mac "$network_settings
+
 if test "$1" = "-newif"
 then
 	bridge="fusion360"
 	bridge_ip="192.168.150.1/24"
-	#if mac will be changed - fusion360 ask to login  account
-	mac="00:11:22:33:44:5A"
 
 	#dedicated iface need for sniff fusion360 only traffic
 	if test $(ip link show $bridge > /dev/null 2>&1; echo $?) -ne 0
@@ -81,7 +90,7 @@ then
 		sudo iptables -t nat -A POSTROUTING -o $def_route_iface -j MASQUERADE
 	fi
 
-	network_settings="--net=$bridge --mac=$mac "$network_settings
+	network_settings="--net=$bridge "$network_settings
 else
 	network_settings="--net=$def_route_iface "$network_settings
 fi
@@ -92,6 +101,12 @@ WINEDEBUG="fixme-all"
 GNUTLS_DEBUG_LEVEL=0
 #exist possibility to enable/disable tls versions an cipher-suites
 GNUTLS_SYSTEM_PRIORITY_FILE="$wine_home/gnutls.config"
+
+
+#  --env=DXVK_HUD=1 \
+#  --env=DXVK_CONFIG_FILE= \
+# none|error|warn|info|debug
+#  --env=DXVK_LOG_LEVEL=debug \
 
 firejail $network_settings \
   --env=GNUTLS_DEBUG_LEVEL=$GNUTLS_DEBUG_LEVEL \
