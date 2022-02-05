@@ -57,16 +57,20 @@ dns="8.8.8.8"
 
 network_settings="--dns=$dns"
 
-#if mac will be changed - fusion360 ask to login  account
-#for this reason we generate random mac and then save it to file
-mac=$(tr -dc A-F0-9 < /dev/urandom | head -c 10 | sed -r 's/(..)/\1:/g;s/:$//;s/^/02:/')
-if test -f run.mac
+#changing mac on wifi probably do not possible
+if test $(iw $def_route_iface info > /dev/null 2>&1; echo $?) -ne  0
 then
-	mac=$(cat run.mac)
-else
-	echo $mac > run.mac
+	#if mac will be changed - fusion360 ask to login  account
+	#for this reason we generate random mac and then save it to file
+	mac=$(tr -dc A-F0-9 < /dev/urandom | head -c 10 | sed -r 's/(..)/\1:/g;s/:$//;s/^/02:/')
+	if test -f run.mac
+	then
+		mac=$(cat run.mac)
+	else
+		echo $mac > run.mac
+	fi
+	network_settings="--mac=$mac "$network_settings
 fi
-network_settings="--mac=$mac "$network_settings
 
 if test "$1" = "-newif"
 then
