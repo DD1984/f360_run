@@ -115,4 +115,6 @@ GNUTLS_SYSTEM_PRIORITY_FILE="$wine_home/gnutls.config"
 firejail $network_settings \
   --env=GNUTLS_DEBUG_LEVEL=$GNUTLS_DEBUG_LEVEL \
   --env=GNUTLS_SYSTEM_PRIORITY_FILE=$GNUTLS_SYSTEM_PRIORITY_FILE \
-  --env=WINEDEBUG=$WINEDEBUG wine Fusion360.exe
+  --env=WINEDEBUG=$WINEDEBUG \
+  --noprofile \
+  sh -c '~/.local/bin/spconvd & wine Fusion360.exe'
