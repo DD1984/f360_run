@@ -46,7 +46,7 @@ for i in $check_no
 do
 	if test $(grep -E "^\s{0,}$i\s{1,}no" $fj_conf | grep -v \# > /dev/null 2>&1 ; echo $?) -ne 0
 	then
-		cho "pls, set \"$i\" to \"no\" in \"$fj_conf\""
+		echo "pls, set \"$i\" to \"no\" in \"$fj_conf\""
 	fi
 done
 
