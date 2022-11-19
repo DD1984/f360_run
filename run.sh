@@ -99,22 +99,22 @@ else
 	network_settings="--net=$def_route_iface "$network_settings
 fi
 
-wine_home="$HOME/.wine"
+ENVS=""
 
-WINEDEBUG="fixme-all"
-GNUTLS_DEBUG_LEVEL=0
-#exist possibility to enable/disable tls versions an cipher-suites
-GNUTLS_SYSTEM_PRIORITY_FILE="$wine_home/gnutls.config"
+ENVS=$ENVS" --env=WINEDEBUG=fixme-all"
 
+#ENVS=$ENVS" --env=GNUTLS_DEBUG_LEVEL=0"
 
-#  --env=DXVK_HUD=1 \
-#  --env=DXVK_CONFIG_FILE= \
+# exist possibility to enable/disable tls versions an cipher-suites
+#ENVS=$ENVS" --env=GNUTLS_SYSTEM_PRIORITY_FILE=$HOME/.wine/gnutls.config"
+
+#ENVS=$ENVS" --env=DXVK_HUD=1"
+#ENVS=$ENVS" --env=DXVK_CONFIG_FILE="
+
 # none|error|warn|info|debug
-#  --env=DXVK_LOG_LEVEL=debug \
+#ENVS=$ENVS" --env=DXVK_LOG_LEVEL=debug"
 
 firejail $network_settings \
-  --env=GNUTLS_DEBUG_LEVEL=$GNUTLS_DEBUG_LEVEL \
-  --env=GNUTLS_SYSTEM_PRIORITY_FILE=$GNUTLS_SYSTEM_PRIORITY_FILE \
-  --env=WINEDEBUG=$WINEDEBUG \
+  $ENVS \
   --noprofile \
-  sh -c '~/.local/bin/spconvd & wine Fusion360.exe'
+  sh -c 'wine Fusion360.exe'
