@@ -114,6 +114,9 @@ ENVS=$ENVS" --env=WINEDEBUG=fixme-all"
 # none|error|warn|info|debug
 #ENVS=$ENVS" --env=DXVK_LOG_LEVEL=debug"
 
+# old auth
+ENVS=$ENVS" --env=FUSION_IDSDK=false"
+
 firejail $network_settings \
   $ENVS \
   --noprofile \
